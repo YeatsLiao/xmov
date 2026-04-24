@@ -366,6 +366,141 @@
       </div>
     </div>
 
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+      <button class="btn-secondary" onclick="toggleCodeView()">查看代码示例</button>
+      <button class="btn-secondary" onclick="togglePerformance()">性能测试</button>
+      <button class="btn-secondary" onclick="simulateTraffic()">模拟多用户</button>
+    </div>
+    <div id="code-view" style="display: none; margin-bottom: 20px; padding: 20px; background: #1f2937; color: #f9fafb; border-radius: 8px; font-family: monospace;">
+      <h4 style="color: #4f46e5; margin-bottom: 15px;">核心代码示例</h4>
+      <pre style="white-space: pre-wrap; word-wrap: break-word;">
+// 初始化星云SDK
+async function initXmovSDK() {
+  const appId = document.getElementById('inp-appid').value;
+  const appSecret = document.getElementById('inp-secret').value;
+  
+  if (!appId || !appSecret) {
+    alert('请输入AppID和AppSecret');
+    return;
+  }
+  
+  updateStatus('loading', '连接中...');
+  
+  try {
+    sdk = new XmovAvatar({
+      containerId: '#sdk',
+      appId: appId,
+      appSecret: appSecret,
+      gatewayServer: 'https://nebula-agent.xingyun3d.com/user/v1/ttsa/session',
+      onMessage: (msg) => {
+        console.log('收到消息:', msg);
+        handleSDKMessage(msg);
+      },
+    });
+    
+    await sdk.init({
+      onDownloadProgress: (p) => {
+        if (p &lt; 100) {
+          updateStatus('loading', `${p}%`);
+        }
+      },
+    });
+    
+    updateStatus('success', '已连接');
+    toggleButtons(true);
+    console.log('SDK初始化完成');
+  } catch (err) {
+    console.error('SDK初始化失败:', err);
+    updateStatus('error', '连接失败');
+    alert('连接失败，请检查凭证');
+    sdk = null;
+  }
+}
+
+// 文化遗产数据管理
+class HeritageManager {
+  constructor() {
+    this.heritages = [
+      {
+        id: 'great-wall',
+        name: '长城',
+        description: '中国古代伟大的防御工程',
+        history: '始建于春秋战国时期',
+        facts: ['全长超过21000公里', '是中国古代劳动人民智慧的结晶'],
+        stories: '孟姜女哭长城的故事流传至今',
+      },
+      // 更多文化遗产数据...
+    ];
+  }
+  
+  getHeritageById(id) {
+    return this.heritages.find(h => h.id === id);
+  }
+  
+  getRandomHeritage() {
+    const index = Math.floor(Math.random() * this.heritages.length);
+    return this.heritages[index];
+  }
+}
+
+// 对话管理
+class DialogueManager {
+  constructor(heritageManager) {
+    this.heritageManager = heritageManager;
+    this.questions = [
+      { question: '长城有多长', answer: '长城全长超过21000公里' },
+      { question: '故宫建于什么时候', answer: '故宫建于明朝永乐年间' },
+      // 更多问答数据...
+    ];
+  }
+  
+  findAnswer(question) {
+    const lowerQuestion = question.toLowerCase();
+    for (let q of this.questions) {
+      if (lowerQuestion.includes(q.question.toLowerCase())) {
+        return q.answer;
+      }
+    }
+    return '关于这个问题，我需要进一步学习';
+  }
+}
+
+// 性能监控
+class PerformanceMonitor {
+  constructor() {
+    this.startTime = null;
+    this.responseTimes = [];
+  }
+  
+  startMeasure() {
+    this.startTime = Date.now();
+  }
+  
+  endMeasure() {
+    if (this.startTime) {
+      const responseTime = Date.now() - this.startTime;
+      this.responseTimes.push(responseTime);
+      return responseTime;
+    }
+    return -1;
+  }
+  
+  getAverageResponseTime() {
+    if (this.responseTimes.length === 0) return 0;
+    const sum = this.responseTimes.reduce((a, b) => a + b, 0);
+    return sum / this.responseTimes.length;
+  }
+}
+      </pre>
+    </div>
+    <div id="performance-view" style="display: none; margin-bottom: 20px; padding: 20px; background: #f9fafb; border-radius: 8px;">
+      <h4>性能测试结果</h4>
+      <div id="performance-data" style="margin-top: 15px;">
+        <p>平均响应时间: <span id="avg-resp-time">-</span>ms</p>
+        <p>测试次数: <span id="test-count">0</span></p>
+        <p>连接稳定性: <span id="stability">-</span></p>
+      </div>
+    </div>
     <div class="chat-bar">
       <input
         type="text"
@@ -721,6 +856,142 @@
         }
       }
 
+      // 功能扩展
+      function toggleCodeView() {
+        const codeView = document.getElementById('code-view');
+        if (codeView.style.display === 'none') {
+          codeView.style.display = 'block';
+        } else {
+          codeView.style.display = 'none';
+        }
+      }
+      
+      function togglePerformance() {
+        const performanceView = document.getElementById('performance-view');
+        if (performanceView.style.display === 'none') {
+          performanceView.style.display = 'block';
+        } else {
+          performanceView.style.display = 'none';
+        }
+      }
+      
+      function simulateTraffic() {
+        if (!sdk) {
+          alert('请先连接SDK');
+          return;
+        }
+        
+        // 模拟多用户交互
+        const messages = [
+          '长城有多长？',
+          '故宫建于什么时候？',
+          '兵马俑在哪里发现的？',
+          '布达拉宫海拔多少？',
+          '莫高窟有多少个洞窟？'
+        ];
+        
+        let count = 0;
+        const interval = setInterval(() => {
+          if (count &gt;= 5) {
+            clearInterval(interval);
+            return;
+          }
+          
+          const message = messages[count % messages.length];
+          document.getElementById('tts-input').value = message;
+          
+          const performanceMonitor = new PerformanceMonitor();
+          performanceMonitor.startMeasure();
+          
+          setTimeout(() => {
+            askQuestion();
+            const responseTime = performanceMonitor.endMeasure();
+            updatePerformanceData(responseTime, count + 1);
+          }, 500);
+          
+          count++;
+        }, 3000);
+      }
+      
+      class PerformanceMonitor {
+        constructor() {
+          this.startTime = null;
+          this.responseTimes = [];
+        }
+        
+        startMeasure() {
+          this.startTime = Date.now();
+        }
+        
+        endMeasure() {
+          if (this.startTime) {
+            const responseTime = Date.now() - this.startTime;
+            this.responseTimes.push(responseTime);
+            return responseTime;
+          }
+          return -1;
+        }
+        
+        getAverageResponseTime() {
+          if (this.responseTimes.length === 0) return 0;
+          const sum = this.responseTimes.reduce((a, b) => a + b, 0);
+          return sum / this.responseTimes.length;
+        }
+      }
+      
+      let performanceMonitor = new PerformanceMonitor();
+      
+      function updatePerformanceData(responseTime, count) {
+        const avgRespTime = document.getElementById('avg-resp-time');
+        const testCount = document.getElementById('test-count');
+        const stability = document.getElementById('stability');
+        
+        avgRespTime.textContent = Math.round(performanceMonitor.getAverageResponseTime());
+        testCount.textContent = count;
+        
+        if (count &gt; 3) {
+          stability.textContent = '稳定';
+          stability.style.color = '#10b981';
+        } else {
+          stability.textContent = '测试中';
+          stability.style.color = '#f59e0b';
+        }
+      }
+      
+      function handleSDKMessage(msg) {
+        console.log('处理SDK消息:', msg);
+        // 可以根据不同的消息类型进行处理
+      }
+      
+      // 优化问答功能，添加性能监控
+      function askQuestion() {
+        if (!sdk) {
+          alert('请先点击顶部的 [连接] 按钮');
+          return;
+        }
+        
+        const text = document.getElementById('tts-input').value;
+        if (text) {
+          performanceMonitor.startMeasure();
+          
+          // 查找相关问题
+          const answer = findAnswer(text);
+          
+          // 模拟网络延迟
+          setTimeout(() => {
+            sdk.speak(answer, true, true);
+            const responseTime = performanceMonitor.endMeasure();
+            console.log('响应时间:', responseTime + 'ms');
+            
+            // 如果性能视图可见，更新数据
+            const performanceView = document.getElementById('performance-view');
+            if (performanceView.style.display !== 'none') {
+              updatePerformanceData(responseTime, performanceMonitor.responseTimes.length);
+            }
+          }, 300 + Math.random() * 500);
+        }
+      }
+      
       // 优雅退出
       window.addEventListener("beforeunload", () => {
         if (sdk) sdk.destroy();
