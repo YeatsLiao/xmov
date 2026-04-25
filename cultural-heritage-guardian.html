@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>文化遗产数字守护者</title>
     <style>
-      /* --- 1. 全局重置与字体 --- */
       :root {
         --primary: #b8860b;
         --primary-hover: #996515;
@@ -13,7 +12,6 @@
         --danger: #c0392b;
         --success: #2d8a4e;
         --bg: #1a1510;
-        --bg-warm: #231d14;
         --card: rgba(35, 29, 20, 0.92);
         --card-border: rgba(184, 134, 11, 0.18);
         --text: #e8dcc8;
@@ -22,476 +20,421 @@
         --gold-bright: #f0c040;
         --jade: #5a8a6a;
         --cinnabar: #c05050;
-        --ink: #3a3530;
       }
 
       * { margin: 0; padding: 0; box-sizing: border-box; }
 
       body {
-        font-family: "PingFang SC", "Microsoft YaHei", "Noto Serif SC",
-          -apple-system, BlinkMacSystemFont, serif;
+        font-family: "PingFang SC", "Microsoft YaHei", "Noto Serif SC", serif;
         background-color: var(--bg);
         color: var(--text);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-        padding: 20px;
+        height: 100vh;
+        overflow: hidden;
         background-image:
-          radial-gradient(ellipse at 15% 80%, rgba(184, 134, 11, 0.06) 0%, transparent 50%),
-          radial-gradient(ellipse at 85% 20%, rgba(90, 138, 106, 0.04) 0%, transparent 50%);
+          radial-gradient(ellipse at 15% 80%, rgba(184,134,11,0.06) 0%, transparent 50%),
+          radial-gradient(ellipse at 85% 20%, rgba(90,138,106,0.04) 0%, transparent 50%);
       }
 
-      /* --- 2. 顶部配置栏 --- */
-      .config-header {
-        background: var(--card);
-        backdrop-filter: blur(16px);
-        border: 1px solid var(--card-border);
-        padding: 14px 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 24px rgba(0,0,0,0.3);
-        width: 100%;
-        max-width: 960px;
+      /* --- 主布局：左数字人 + 右信息 --- */
+      .main-layout {
         display: flex;
-        flex-wrap: wrap;
-        align-items: flex-end;
-        gap: 12px;
-        margin-bottom: 16px;
+        height: 100vh;
+        gap: 0;
       }
 
-      .input-group {
+      /* === 左侧：数字人区域 === */
+      .left-panel {
+        flex: 0 0 55%;
         display: flex;
         flex-direction: column;
-        gap: 5px;
-        flex: 1;
-        min-width: 180px;
+        position: relative;
       }
 
-      .input-group label {
-        font-size: 10px;
-        font-weight: 600;
-        color: var(--text-dim);
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
+      /* 顶部配置栏（紧凑） */
+      .config-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+        background: var(--card);
+        border-bottom: 1px solid var(--card-border);
+        z-index: 10;
       }
 
-      .input-group input {
-        padding: 0 12px;
-        height: 38px;
-        border: 1px solid rgba(184, 134, 11, 0.25);
-        border-radius: 6px;
-        font-size: 13px;
-        outline: none;
-        transition: border-color 0.2s, box-shadow 0.2s;
-        background: rgba(26, 21, 16, 0.7);
-        color: var(--text);
+      .config-bar .input-group {
+        display: flex; align-items: center; gap: 6px; flex: 1;
       }
-
-      .input-group input::placeholder { color: rgba(168, 152, 120, 0.4); }
-      .input-group input:focus {
-        border-color: var(--gold);
-        box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.12);
+      .config-bar .input-group label {
+        font-size: 11px; font-weight: 600; color: var(--text-dim);
+        text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;
       }
-
-      .action-group { display: flex; align-items: flex-end; gap: 8px; }
+      .config-bar .input-group input {
+        padding: 0 10px; height: 32px; width: 160px;
+        border: 1px solid rgba(184,134,11,0.25); border-radius: 5px;
+        font-size: 13px; outline: none; background: rgba(26,21,16,0.7); color: var(--text);
+        transition: border-color 0.2s;
+      }
+      .config-bar .input-group input::placeholder { color: rgba(168,152,120,0.35); }
+      .config-bar .input-group input:focus { border-color: var(--gold); }
 
       button {
-        padding: 0 16px;
-        border: none;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 13px;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        height: 38px;
-        white-space: nowrap;
-        font-family: inherit;
+        padding: 0 14px; border: none; border-radius: 5px;
+        font-weight: 600; font-size: 13px; cursor: pointer;
+        transition: all 0.15s; display: inline-flex;
+        align-items: center; justify-content: center;
+        height: 32px; white-space: nowrap; font-family: inherit;
       }
       button:active { transform: scale(0.97); }
 
       .btn-primary {
         background: linear-gradient(135deg, var(--primary), #8b6914);
-        color: #fff;
-        box-shadow: 0 2px 10px rgba(184, 134, 11, 0.25);
+        color: #fff; box-shadow: 0 2px 8px rgba(184,134,11,0.2);
       }
-      .btn-primary:hover {
-        background: linear-gradient(135deg, var(--primary-hover), #7a5a10);
-        box-shadow: 0 4px 16px rgba(184, 134, 11, 0.35);
-      }
+      .btn-primary:hover { background: linear-gradient(135deg, var(--primary-hover), #7a5a10); }
 
       .btn-danger { background: var(--danger); color: #fff; }
       .btn-danger:hover { background: #a93226; }
 
       .btn-ghost {
-        background: var(--primary-light);
-        color: var(--gold);
-        border: 1px solid rgba(184, 134, 11, 0.2);
+        background: var(--primary-light); color: var(--gold);
+        border: 1px solid rgba(184,134,11,0.2);
       }
-      .btn-ghost:hover {
-        background: rgba(184, 134, 11, 0.2);
-        color: var(--gold-bright);
-      }
+      .btn-ghost:hover { background: rgba(184,134,11,0.2); color: var(--gold-bright); }
 
-      .status-wrapper {
+      .status-chip {
+        display: flex; align-items: center; gap: 5px;
+        font-size: 12px; color: var(--text-dim);
+        padding: 0 10px; height: 32px; border-radius: 16px;
+        background: rgba(26,21,16,0.5); border: 1px solid rgba(184,134,11,0.1);
         margin-left: auto;
-        display: flex;
-        align-items: center;
-        font-size: 12px;
-        color: var(--text-dim);
-        background: rgba(26, 21, 16, 0.5);
-        padding: 0 14px;
-        border-radius: 20px;
-        height: 38px;
-        border: 1px solid rgba(184, 134, 11, 0.1);
       }
-
       .status-dot {
         width: 7px; height: 7px; border-radius: 50%;
-        background: #555; margin-right: 7px;
-        transition: background 0.3s, box-shadow 0.3s;
+        background: #555; transition: background 0.3s, box-shadow 0.3s;
       }
       .status-dot.success { background: var(--success); box-shadow: 0 0 6px var(--success); }
       .status-dot.error { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
       .status-dot.loading { background: #d4a017; animation: pulse 1.5s ease-in-out infinite; }
-
       @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-      /* --- 3. 数字人舞台 --- */
-      #sdk-wrapper {
+      /* 数字人舞台 */
+      .sdk-area {
+        flex: 1;
         display: flex;
+        align-items: center;
         justify-content: center;
-        width: 100%;
-        margin-bottom: 16px;
+        position: relative;
+        padding: 16px;
       }
 
       #sdk {
-        width: 800px; height: 450px;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
         background-color: #0a0806;
         border-radius: 10px;
-        box-shadow: 0 16px 48px -8px rgba(0,0,0,0.5), 0 0 0 1px rgba(184,134,11,0.08);
-        transition: all 0.4s cubic-bezier(0.25,0.8,0.25,1);
+        box-shadow: 0 8px 32px -4px rgba(0,0,0,0.5);
         position: relative;
         overflow: hidden;
-        max-width: 100%;
       }
 
       #sdk::before {
         content: "文化遗产数字守护者";
         position: absolute; top: 50%; left: 50%;
         transform: translate(-50%,-50%);
-        color: rgba(184,134,11,0.2);
-        font-size: 15px; font-weight: 600;
-        letter-spacing: 6px;
+        color: rgba(184,134,11,0.15);
+        font-size: 18px; font-weight: 600;
+        letter-spacing: 8px;
         z-index: 0; pointer-events: none;
       }
 
-      /* skill 规范: widget_pic 背景图层 */
+      /* skill 规范: widget_pic */
       #bg-layer {
         position: absolute; inset: 0;
         width: 100%; height: 100%;
         object-fit: cover; z-index: 0;
         display: none; opacity: 0.5;
-        transition: opacity 0.5s ease;
       }
 
-      /* skill 规范: subtitle_on/off 自定义字幕 */
-      #custom-subtitle {
-        position: absolute; bottom: 16px; left: 50%;
+      /* 字幕 - 放在 sdk 外部下方，不被数字人遮挡 */
+      .subtitle-bar {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
         transform: translateX(-50%);
-        max-width: 82%;
-        padding: 8px 20px;
-        background: rgba(26, 21, 16, 0.85);
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(212, 160, 23, 0.3);
-        border-radius: 6px;
+        width: 90%;
+        max-width: 700px;
+        padding: 10px 24px;
+        background: rgba(26,21,16,0.88);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(212,160,23,0.3);
+        border-radius: 8px;
         color: var(--gold-bright);
-        font-size: 14px; line-height: 1.6;
+        font-size: 18px;
+        line-height: 1.6;
         text-align: center;
-        z-index: 5; display: none;
+        z-index: 20;
+        display: none;
         animation: subIn 0.3s ease;
       }
       @keyframes subIn {
-        from { opacity:0; transform: translateX(-50%) translateY(8px); }
+        from { opacity:0; transform: translateX(-50%) translateY(10px); }
         to { opacity:1; transform: translateX(-50%) translateY(0); }
       }
 
-      /* --- 4. 模式指示器 --- */
-      .mode-bar {
-        width: 100%; max-width: 960px;
-        display: flex; align-items: center; gap: 12px;
+      /* skill 规范: subtitle_on/off - 仍在 #sdk 内部供 SDK 回调，但视觉上隐藏 */
+      #custom-subtitle {
+        position: absolute; bottom: 0; left: 0;
+        width: 1px; height: 1px; overflow: hidden;
+        z-index: -1; opacity: 0;
+      }
+
+      /* === 右侧：信息面板 === */
+      .right-panel {
+        flex: 0 0 45%;
+        display: flex;
+        flex-direction: column;
+        background: var(--card);
+        border-left: 1px solid var(--card-border);
+        overflow: hidden;
+      }
+
+      .panel-top {
+        padding: 16px 20px 0;
+        flex-shrink: 0;
+      }
+
+      .panel-title {
+        display: flex; align-items: center; gap: 10px;
         margin-bottom: 12px;
       }
+      .panel-title h2 {
+        font-size: 20px; font-weight: 700;
+        color: var(--gold); letter-spacing: 3px;
+      }
+      .panel-title .line {
+        flex: 1; height: 1px;
+        background: linear-gradient(to right, rgba(184,134,11,0.3), transparent);
+      }
 
-      .mode-indicator {
-        display: inline-flex; align-items: center; gap: 6px;
-        padding: 4px 14px; border-radius: 20px;
-        font-size: 12px; font-weight: 600;
-        letter-spacing: 0.5px;
-        transition: all 0.3s ease;
+      /* 模式 + 进度 */
+      .mode-row {
+        display: flex; align-items: center; gap: 10px;
+        margin-bottom: 12px;
       }
-      .mode-indicator.idle {
-        background: rgba(90,138,106,0.12); color: var(--jade);
-        border: 1px solid rgba(90,138,106,0.2);
+      .mode-tag {
+        padding: 3px 12px; border-radius: 14px;
+        font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+        transition: all 0.3s;
       }
-      .mode-indicator.tour {
-        background: rgba(212,160,23,0.15); color: var(--gold-bright);
-        border: 1px solid rgba(212,160,23,0.3);
-        animation: modePulse 2s ease-in-out infinite;
-      }
-      .mode-indicator.quiz {
-        background: rgba(192,80,80,0.12); color: var(--cinnabar);
-        border: 1px solid rgba(192,80,80,0.25);
-      }
+      .mode-tag.idle { background: rgba(90,138,106,0.12); color: var(--jade); border: 1px solid rgba(90,138,106,0.2); }
+      .mode-tag.tour { background: rgba(212,160,23,0.15); color: var(--gold-bright); border: 1px solid rgba(212,160,23,0.3); animation: modePulse 2s ease-in-out infinite; }
+      .mode-tag.quiz { background: rgba(192,80,80,0.12); color: var(--cinnabar); border: 1px solid rgba(192,80,80,0.25); }
       @keyframes modePulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
 
-      .tour-progress {
-        font-size: 12px; color: var(--text-dim);
-        margin-left: auto;
-      }
-
-      /* --- 5. 文化遗产面板 --- */
-      .heritage-panel {
-        background: var(--card);
-        backdrop-filter: blur(16px);
-        border: 1px solid var(--card-border);
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 24px rgba(0,0,0,0.2);
-        width: 100%; max-width: 960px;
-        margin-bottom: 16px;
-      }
-
-      .panel-header {
-        display: flex; align-items: center; gap: 10px;
-        margin-bottom: 14px;
-      }
-      .panel-header h3 {
-        font-size: 16px; font-weight: 700;
-        color: var(--gold); letter-spacing: 2px;
-      }
-      .panel-header .line {
-        flex: 1; height: 1px;
-        background: linear-gradient(to right, rgba(184,134,11,0.25), transparent);
-      }
+      .tour-progress { font-size: 13px; color: var(--text-dim); margin-left: auto; }
 
       /* 分类标签 */
-      .category-tabs {
-        display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
-      }
+      .cat-tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
       .cat-tab {
-        padding: 3px 12px; border-radius: 14px;
-        font-size: 11px; font-weight: 600;
+        padding: 4px 14px; border-radius: 14px;
+        font-size: 13px; font-weight: 600;
         cursor: pointer; transition: all 0.2s;
         background: rgba(58,53,48,0.5); color: var(--text-dim);
         border: 1px solid transparent;
       }
       .cat-tab:hover { color: var(--text); background: rgba(58,53,48,0.8); }
-      .cat-tab.active {
-        background: var(--primary-light); color: var(--gold);
-        border-color: rgba(184,134,11,0.3);
-      }
+      .cat-tab.active { background: var(--primary-light); color: var(--gold); border-color: rgba(184,134,11,0.3); }
 
       /* 遗产选择器 */
       .heritage-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 8px; margin-bottom: 16px;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 8px; margin-bottom: 12px;
       }
-
       .heritage-card {
-        padding: 10px 8px; border-radius: 8px;
+        padding: 10px 6px; border-radius: 8px;
         text-align: center; cursor: pointer;
         transition: all 0.2s;
         background: rgba(58,53,48,0.3);
         border: 1px solid rgba(184,134,11,0.08);
       }
-      .heritage-card:hover {
-        background: rgba(184,134,11,0.08);
-        border-color: rgba(184,134,11,0.2);
-      }
-      .heritage-card.active {
-        background: rgba(184,134,11,0.12);
-        border-color: var(--gold);
-        box-shadow: 0 0 12px rgba(184,134,11,0.1);
-      }
-      .heritage-card .hc-name {
-        font-size: 14px; font-weight: 700; color: var(--text);
-        margin-bottom: 2px;
-      }
-      .heritage-card .hc-tag {
-        font-size: 10px; color: var(--text-dim);
-      }
+      .heritage-card:hover { background: rgba(184,134,11,0.08); border-color: rgba(184,134,11,0.2); }
+      .heritage-card.active { background: rgba(184,134,11,0.12); border-color: var(--gold); box-shadow: 0 0 12px rgba(184,134,11,0.1); }
+      .heritage-card .hc-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+      .heritage-card .hc-tag { font-size: 11px; color: var(--text-dim); }
 
-      /* 详情区 */
+      /* 详情区（可滚动） */
+      .detail-scroll {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0 20px 16px;
+      }
+      .detail-scroll::-webkit-scrollbar { width: 4px; }
+      .detail-scroll::-webkit-scrollbar-track { background: transparent; }
+      .detail-scroll::-webkit-scrollbar-thumb { background: rgba(184,134,11,0.2); border-radius: 2px; }
+
       .detail { display: none; animation: fadeIn 0.35s ease; }
       .detail.visible { display: block; }
       @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
 
-      .detail-top {
-        display: flex; gap: 16px; margin-bottom: 16px;
-        align-items: flex-start;
-      }
       .detail-title {
-        font-size: 20px; font-weight: 700; color: var(--gold-bright);
-        margin-bottom: 4px;
+        font-size: 26px; font-weight: 700; color: var(--gold-bright);
+        margin-bottom: 6px;
       }
       .detail-era {
-        font-size: 12px; color: var(--jade);
-        padding: 2px 8px; border-radius: 10px;
+        font-size: 14px; color: var(--jade);
+        padding: 3px 12px; border-radius: 12px;
         background: rgba(90,138,106,0.12);
-        display: inline-block; margin-bottom: 8px;
+        display: inline-block; margin-bottom: 10px;
       }
       .detail-desc {
-        font-size: 13px; color: var(--text-dim); line-height: 1.8;
+        font-size: 16px; color: var(--text-dim); line-height: 1.8;
+        margin-bottom: 18px;
       }
 
-      .detail-sections {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
-      }
-      .detail-section { margin-bottom: 0; }
-      .detail-section.full { grid-column: 1 / -1; }
-
+      .detail-section { margin-bottom: 16px; }
       .detail-section h5 {
-        font-size: 11px; font-weight: 700;
+        font-size: 14px; font-weight: 700;
         color: var(--gold); text-transform: uppercase;
-        letter-spacing: 1.5px; margin-bottom: 6px;
-        padding-bottom: 4px;
+        letter-spacing: 2px; margin-bottom: 8px;
+        padding-bottom: 6px;
         border-bottom: 1px solid rgba(184,134,11,0.15);
       }
       .detail-section p {
-        font-size: 13px; color: rgba(232,220,200,0.85); line-height: 1.8;
+        font-size: 16px; color: rgba(232,220,200,0.85); line-height: 1.9;
       }
       .detail-section ul { list-style: none; padding: 0; }
       .detail-section li {
-        font-size: 13px; color: rgba(232,220,200,0.85); line-height: 1.8;
-        padding-left: 14px; position: relative;
+        font-size: 16px; color: rgba(232,220,200,0.85); line-height: 1.9;
+        padding-left: 18px; position: relative;
       }
       .detail-section li::before {
-        content: ""; position: absolute; left: 0; top: 10px;
-        width: 5px; height: 5px; border-radius: 50%;
+        content: ""; position: absolute; left: 0; top: 12px;
+        width: 6px; height: 6px; border-radius: 50%;
         background: var(--jade);
       }
 
       .placeholder {
-        text-align: center; padding: 28px 20px;
-        color: rgba(168,152,120,0.4); font-size: 13px;
+        text-align: center; padding: 40px 20px;
+        color: rgba(168,152,120,0.4); font-size: 16px;
       }
-      .placeholder .icon { font-size: 28px; margin-bottom: 8px; display: block; }
+      .placeholder .icon { font-size: 36px; margin-bottom: 10px; display: block; }
 
-      /* --- 6. 底部对话栏 --- */
+      /* 底部对话栏 */
       .chat-bar {
-        background: var(--card);
-        backdrop-filter: blur(16px);
-        border: 1px solid var(--card-border);
-        padding: 4px; border-radius: 40px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-        width: 100%; max-width: 720px;
-        display: flex; gap: 6px;
+        padding: 12px 20px;
+        border-top: 1px solid var(--card-border);
+        flex-shrink: 0;
+        display: flex; gap: 8px;
       }
       .chat-bar input {
-        flex: 1; border: none; background: transparent;
-        padding: 0 18px; font-size: 14px; outline: none;
-        color: var(--text); height: 38px; font-family: inherit;
+        flex: 1; border: 1px solid rgba(184,134,11,0.2);
+        background: rgba(26,21,16,0.5);
+        padding: 0 16px; font-size: 15px; outline: none;
+        color: var(--text); height: 40px; border-radius: 20px;
+        font-family: inherit;
+        transition: border-color 0.2s;
       }
       .chat-bar input::placeholder { color: rgba(168,152,120,0.35); }
-      .chat-bar button { border-radius: 34px; padding: 0 20px; }
+      .chat-bar input:focus { border-color: var(--gold); }
+      .chat-bar button { border-radius: 20px; padding: 0 20px; height: 40px; }
 
-      /* --- 7. 响应式 --- */
-      @media (max-width: 768px) {
-        body { padding: 10px; }
-        .config-header { flex-direction: column; align-items: stretch; }
-        .action-group { flex-wrap: wrap; }
-        .status-wrapper { margin-left: 0; width: fit-content; }
-        #sdk { width: 100%; height: 260px; border-radius: 8px; }
-        .heritage-panel { padding: 14px; }
-        .detail-sections { grid-template-columns: 1fr; }
-        .heritage-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); }
+      /* --- 响应式 --- */
+      @media (max-width: 900px) {
+        .main-layout { flex-direction: column; }
+        .left-panel { flex: 0 0 45vh; }
+        .right-panel { flex: 1; border-left: none; border-top: 1px solid var(--card-border); }
+        .subtitle-bar { font-size: 15px; }
       }
     </style>
   </head>
   <body>
-    <header class="config-header">
-      <div class="input-group">
-        <label>App ID</label>
-        <input type="text" id="inp-appid" placeholder="粘贴 App ID" />
-      </div>
-      <div class="input-group">
-        <label>App Secret</label>
-        <input type="password" id="inp-secret" placeholder="粘贴 App Secret" />
-      </div>
-      <div class="action-group">
-        <button class="btn-primary" onclick="doConnect()" id="btn-conn">连接</button>
-        <button class="btn-danger" onclick="doDisconnect()" style="display:none" id="btn-disconn">断开</button>
-        <button class="btn-ghost" onclick="toggleRatio()" id="btn-ratio">竖屏</button>
-      </div>
-      <div class="status-wrapper">
-        <div class="status-dot" id="status-light"></div>
-        <span id="status-text">未连接</span>
-      </div>
-    </header>
+    <div class="main-layout">
+      <!-- 左侧：数字人 -->
+      <div class="left-panel">
+        <div class="config-bar">
+          <div class="input-group">
+            <label>App ID</label>
+            <input type="text" id="inp-appid" placeholder="粘贴 App ID" />
+          </div>
+          <div class="input-group">
+            <label>Secret</label>
+            <input type="password" id="inp-secret" placeholder="粘贴 App Secret" />
+          </div>
+          <button class="btn-primary" onclick="doConnect()" id="btn-conn">连接</button>
+          <button class="btn-danger" onclick="doDisconnect()" style="display:none" id="btn-disconn">断开</button>
+          <button class="btn-ghost" onclick="toggleRatio()" id="btn-ratio">竖屏</button>
+          <div class="status-chip">
+            <div class="status-dot" id="status-light"></div>
+            <span id="status-text">未连接</span>
+          </div>
+        </div>
 
-    <div id="sdk-wrapper">
-      <div id="sdk">
-        <img id="bg-layer" alt="background" />
-        <div id="custom-subtitle"></div>
+        <div class="sdk-area">
+          <div id="sdk">
+            <img id="bg-layer" alt="background" />
+            <!-- skill 规范: subtitle_on/off 回调目标（视觉隐藏，内容同步到外部字幕） -->
+            <div id="custom-subtitle"></div>
+          </div>
+          <!-- 字幕放在 sdk 外部，不被数字人遮挡 -->
+          <div class="subtitle-bar" id="subtitle-display"></div>
+        </div>
       </div>
-    </div>
 
-    <div class="mode-bar">
-      <div class="mode-indicator idle" id="mode-indicator">待命</div>
-      <span class="tour-progress" id="tour-progress"></span>
-    </div>
+      <!-- 右侧：信息面板 -->
+      <div class="right-panel">
+        <div class="panel-top">
+          <div class="panel-title">
+            <h2>文化遗产</h2>
+            <div class="line"></div>
+          </div>
+          <div class="mode-row">
+            <div class="mode-tag idle" id="mode-indicator">待命</div>
+            <span class="tour-progress" id="tour-progress"></span>
+          </div>
+          <div class="cat-tabs" id="category-tabs">
+            <span class="cat-tab active" data-cat="all" onclick="filterCategory('all')">全部</span>
+            <span class="cat-tab" data-cat="建筑" onclick="filterCategory('建筑')">建筑</span>
+            <span class="cat-tab" data-cat="石窟" onclick="filterCategory('石窟')">石窟</span>
+            <span class="cat-tab" data-cat="陵墓" onclick="filterCategory('陵墓')">陵墓</span>
+            <span class="cat-tab" data-cat="自然" onclick="filterCategory('自然')">自然</span>
+            <span class="cat-tab" data-cat="非遗" onclick="filterCategory('非遗')">非遗</span>
+          </div>
+          <div class="heritage-grid" id="heritage-grid"></div>
+        </div>
 
-    <div class="heritage-panel">
-      <div class="panel-header">
-        <h3>文化遗产</h3>
-        <div class="line"></div>
-      </div>
-      <div class="category-tabs" id="category-tabs">
-        <span class="cat-tab active" data-cat="all" onclick="filterCategory('all')">全部</span>
-        <span class="cat-tab" data-cat="建筑" onclick="filterCategory('建筑')">建筑</span>
-        <span class="cat-tab" data-cat="石窟" onclick="filterCategory('石窟')">石窟</span>
-        <span class="cat-tab" data-cat="陵墓" onclick="filterCategory('陵墓')">陵墓</span>
-        <span class="cat-tab" data-cat="自然" onclick="filterCategory('自然')">自然</span>
-        <span class="cat-tab" data-cat="非遗" onclick="filterCategory('非遗')">非遗</span>
-      </div>
-      <div class="heritage-grid" id="heritage-grid"></div>
-      <div class="detail" id="detail">
-        <div class="detail-top">
-          <div>
+        <div class="detail-scroll">
+          <div class="detail" id="detail">
             <div class="detail-title" id="d-name"></div>
             <div class="detail-era" id="d-era"></div>
             <div class="detail-desc" id="d-desc"></div>
+            <div class="detail-section">
+              <h5>历史沿革</h5>
+              <p id="d-history"></p>
+            </div>
+            <div class="detail-section">
+              <h5>核心知识</h5>
+              <ul id="d-facts"></ul>
+            </div>
+            <div class="detail-section">
+              <h5>文化故事</h5>
+              <p id="d-stories"></p>
+            </div>
+          </div>
+          <div class="placeholder" id="placeholder">
+            <span class="icon">&#127963;</span>
+            选择文化遗产，数字人将为您讲解
           </div>
         </div>
-        <div class="detail-sections">
-          <div class="detail-section">
-            <h5>历史沿革</h5>
-            <p id="d-history"></p>
-          </div>
-          <div class="detail-section">
-            <h5>核心知识</h5>
-            <ul id="d-facts"></ul>
-          </div>
-          <div class="detail-section full">
-            <h5>文化故事</h5>
-            <p id="d-stories"></p>
-          </div>
-        </div>
-      </div>
-      <div class="placeholder" id="placeholder">
-        <span class="icon">&#127963;</span>
-        选择文化遗产，数字人将为您讲解
-      </div>
-    </div>
 
-    <div class="chat-bar">
-      <input type="text" id="tts-input" placeholder="输入问题，如：长城有多长？" />
-      <button class="btn-primary" onclick="askQuestion()">提问</button>
-      <button class="btn-ghost" onclick="startTour()" id="btn-tour">导览</button>
+        <div class="chat-bar">
+          <input type="text" id="tts-input" placeholder="输入问题，如：长城有多长？" />
+          <button class="btn-primary" onclick="askQuestion()">提问</button>
+          <button class="btn-ghost" onclick="startTour()" id="btn-tour">导览</button>
+        </div>
+      </div>
     </div>
 
     <script src="https://media.xingyun3d.com/xingyun3d/general/litesdk/xmovAvatar@latest.js"></script>
@@ -500,7 +443,7 @@
       let sdk = null;
       let isPortrait = false;
       let pendingSpeak = null;
-      let currentMode = "idle"; // idle | tour | quiz
+      let currentMode = "idle";
       let tourTimers = [];
       let tourIndex = 0;
       let currentCategory = "all";
@@ -552,13 +495,13 @@
           era: "春秋至今",
           desc: "中国古典园林的代表，以\"咫尺之内再造乾坤\"著称，1997年列入世界文化遗产，体现了中国古代文人山水审美理想。",
           history: "苏州园林起源于春秋吴国，鼎盛于明清。现存完整园林60余处，其中拙政园、留园、网师园、环秀山庄最具代表性。",
-          facts: ["拙政园是苏州最大的古典园林，占地约5.2公顷","留园与北京颐和园、承德避暑山庄、拙政园并称中国四大名园","园林设计讲究借景、对景、框景等造景手法","被联合国教科文组织誉为\"东方文明的艺术典范\""],
+          facts: ["拙政园是苏州最大的古典园林，占地约5.2公顷","留园与颐和园、避暑山庄、拙政园并称中国四大名园","园林设计讲究借景、对景、框景等造景手法","被联合国教科文组织誉为\"东方文明的艺术典范\""],
           stories: "拙政园名取自晋代潘岳《闲居赋》\"筑室种树，逍遥自得……此亦拙者之为政也\"，表达了文人归隐田园、寄情山水的心志。"
         },
         {
           id: "longmen", name: "龙门石窟", category: "石窟",
           era: "北魏至宋代",
-          desc: "中国四大石窟之一，与莫高窟、云冈石窟、麦积山石窟并称，2000年列入世界文化遗产，是北魏至唐代皇家造像艺术的巅峰。",
+          desc: "中国四大石窟之一，2000年列入世界文化遗产，是北魏至唐代皇家造像艺术的巅峰。",
           history: "开凿于北魏孝文帝迁都洛阳前后（493年），历经东魏、西魏、北齐、隋、唐等朝代连续营造达400余年。",
           facts: ["现存窟龛2345个，造像10万余尊","碑刻题记2860多品，是中国石窟中题记最多的一处","卢舍那大佛高17.14米，是龙门石窟最大的佛像","奉先寺由武则天赞助修造，据传以武则天容貌为蓝本"],
           stories: "传说卢舍那大佛以武则天容貌为蓝本雕刻。武则天曾以两万贯脂粉钱赞助奉先寺修造，这尊大佛成为大唐盛世与女性力量的永恒象征。"
@@ -566,18 +509,18 @@
         {
           id: "ming-tombs", name: "明孝陵", category: "陵墓",
           era: "明洪武十四年（1381）",
-          desc: "明太祖朱元璋与马皇后合葬陵寝，2003年列入世界文化遗产，开创了明清帝陵的一代规制，影响此后五百年的皇家陵寝制度。",
+          desc: "明太祖朱元璋与马皇后合葬陵寝，2003年列入世界文化遗产，开创了明清帝陵的一代规制。",
           history: "始建于洪武十四年，永乐三年建成，历时25年。是中国规模最大的帝王陵寝之一，也是南京地区唯一的世界文化遗产。",
-          facts: ["占地约170万平方米，是中国规模最大的帝王陵寝之一","神道石刻共12对石兽、2对石人，造型生动","首创方城明楼制度，影响明清两代帝陵规制","2003年与明十三陵、清东陵、清西陵合并列入世遗"],
+          facts: ["占地约170万平方米，是中国规模最大的帝王陵寝之一","神道石刻共12对石兽、2对石人，造型生动","首创方城明楼制度，影响明清两代帝陵规制","2003年与明十三陵等合并列入世遗"],
           stories: "明孝陵的神道不走直线而是弯曲绕行，据说是为了避开孙权墓。朱元璋曾说\"孙权也是条好汉，留他守门\"，故神道绕孙权墓而过。"
         },
         {
           id: "huangshan", name: "黄山", category: "自然",
           era: "形成于1亿年前",
           desc: "中国最著名的山岳风景区之一，1990年列入世界文化与自然双重遗产，以奇松、怪石、云海、温泉\"四绝\"闻名天下。",
-          history: "黄山古称黟山，因传说轩辕黄帝曾在此炼丹而改名。唐天宝六年（747年）由唐玄宗下令改名黄山，此后成为文人墨客的朝圣之地。",
-          facts: ["最高峰莲花峰海拔1864.8米","以奇松、怪石、云海、温泉、冬雪\"五绝\"著称","徐霞客两度登临，留下\"五岳归来不看山，黄山归来不看岳\"名句","是中国仅有的四处世界双重遗产之一"],
-          stories: "徐霞客一生两度登临黄山，发出\"薄海内外之名山，无如徽之黄山\"的绝赞。此后\"黄山归来不看岳\"成为千古名句，奠定了黄山在中国名山中的至高地位。"
+          history: "黄山古称黟山，因传说轩辕黄帝曾在此炼丹而改名。唐天宝六年由唐玄宗下令改名黄山，此后成为文人墨客的朝圣之地。",
+          facts: ["最高峰莲花峰海拔1864.8米","以奇松、怪石、云海、温泉、冬雪\"五绝\"著称","徐霞客赞\"五岳归来不看山，黄山归来不看岳\"","是中国仅有的四处世界双重遗产之一"],
+          stories: "徐霞客一生两度登临黄山，发出\"薄海内外之名山，无如徽之黄山\"的绝赞。\"黄山归来不看岳\"成为千古名句，奠定了黄山在中国名山中的至高地位。"
         },
         {
           id: "kunqu", name: "昆曲", category: "非遗",
@@ -585,11 +528,10 @@
           desc: "中国最古老的戏曲剧种之一，被誉为\"百戏之祖\"，2001年入选联合国教科文组织首批\"人类口头和非物质遗产代表作\"。",
           history: "起源于元末明初昆山一带，经魏良辅等人改革后形成\"水磨调\"，明万历年间风靡全国。清中叶后渐衰，1956年《十五贯》演出后复兴。",
           facts: ["有600余年历史，是中国最古老的戏曲剧种之一","唱腔细腻婉转，称\"水磨调\"，一唱三叹","代表剧目有《牡丹亭》《长生殿》《桃花扇》等","2001年成为中国首个入选世界非遗的项目"],
-          stories: "汤显祖的《牡丹亭》是昆曲最经典的作品。杜丽娘\"游园惊梦\"一段，梦中与柳梦梅相遇，醒后相思而死，又因情复生——\"情不知所起，一往而深\"，成为中国文学最动人的爱情宣言。"
+          stories: "汤显祖的《牡丹亭》是昆曲最经典的作品。杜丽娘\"游园惊梦\"，梦中与柳梦梅相遇，醒后相思而死，又因情复生——\"情不知所起，一往而深\"，成为中国文学最动人的爱情宣言。"
         }
       ];
 
-      // 问答知识库
       const qaDB = [
         { kw: ["长城","多长","长度"], a: "长城全长超过21196公里，横跨中国15个省份，是世界上最长的防御工程。" },
         { kw: ["长城","作用","为什么","防御"], a: "长城的主要作用是防御北方游牧民族入侵，同时兼具边疆治理、商贸管控和通讯传递功能，更是中华文明的精神象征。" },
@@ -613,7 +555,7 @@
         { kw: ["明孝陵","朱元璋"], a: "明孝陵是明太祖朱元璋与马皇后的合葬陵寝，占地约170万平方米，开创了明清帝陵的一代规制。" }
       ];
 
-      // --- 初始化遗产网格 ---
+      // --- 渲染遗产网格 ---
       function renderGrid(cat) {
         const grid = document.getElementById("heritage-grid");
         const filtered = cat === "all" ? heritages : heritages.filter(h => h.category === cat);
@@ -627,9 +569,7 @@
 
       function filterCategory(cat) {
         currentCategory = cat;
-        document.querySelectorAll(".cat-tab").forEach(t =>
-          t.classList.toggle("active", t.dataset.cat === cat)
-        );
+        document.querySelectorAll(".cat-tab").forEach(t => t.classList.toggle("active", t.dataset.cat === cat));
         renderGrid(cat);
       }
 
@@ -637,24 +577,16 @@
       function setMode(mode) {
         currentMode = mode;
         const el = document.getElementById("mode-indicator");
-        el.className = "mode-indicator " + mode;
-        const labels = { idle: "待命", tour: "导览中", quiz: "问答" };
-        el.textContent = labels[mode] || "待命";
-
-        const btnTour = document.getElementById("btn-tour");
-        if (mode === "tour") {
-          btnTour.textContent = "停止";
-          btnTour.onclick = stopTour;
-        } else {
-          btnTour.textContent = "导览";
-          btnTour.onclick = startTour;
-        }
+        el.className = "mode-tag " + mode;
+        el.textContent = { idle: "待命", tour: "导览中", quiz: "问答" }[mode] || "待命";
+        const btn = document.getElementById("btn-tour");
+        if (mode === "tour") { btn.textContent = "停止"; btn.onclick = stopTour; }
+        else { btn.textContent = "导览"; btn.onclick = startTour; }
       }
 
       function stopTour() {
         tourTimers.forEach(t => clearTimeout(t));
-        tourTimers = [];
-        tourIndex = 0;
+        tourTimers = []; tourIndex = 0;
         setMode("idle");
         document.getElementById("tour-progress").textContent = "";
         if (sdk) speakWithInterrupt("导览已停止，您可以随时提问或重新开始导览。");
@@ -679,13 +611,19 @@
               const bg = document.getElementById("bg-layer");
               if (data.image) { bg.src = data.image; bg.style.display = "block"; }
             },
+            // skill 规范: subtitle_on 拦截，内容同步到外部字幕显示
             "subtitle_on": (data) => {
+              // 同步到 #custom-subtitle（供 SDK 内部逻辑）
               const sub = document.getElementById("custom-subtitle");
-              if (data.text) { sub.textContent = data.text; sub.style.display = "block"; }
+              if (data.text) sub.textContent = data.text;
+              // 同步到外部可见字幕
+              const display = document.getElementById("subtitle-display");
+              if (data.text) { display.textContent = data.text; display.style.display = "block"; }
               return false;
             },
             "subtitle_off": () => {
-              document.getElementById("custom-subtitle").style.display = "none";
+              document.getElementById("custom-subtitle").textContent = "";
+              document.getElementById("subtitle-display").style.display = "none";
               return false;
             }
           },
@@ -702,9 +640,7 @@
         });
 
         try {
-          await sdk.init({
-            onDownloadProgress: (p) => { if (p < 100) updateStatus("loading", `${p}%`); }
-          });
+          await sdk.init({ onDownloadProgress: (p) => { if (p < 100) updateStatus("loading", `${p}%`); } });
           updateStatus("success", "已连接");
           toggleButtons(true);
         } catch (err) {
@@ -725,43 +661,40 @@
 
       function toggleRatio() {
         const c = document.getElementById("sdk"), b = document.getElementById("btn-ratio");
-        if (isPortrait) { c.style.width="800px"; c.style.height="450px"; isPortrait=false; b.textContent="竖屏"; }
-        else { c.style.width="360px"; c.style.height="640px"; isPortrait=true; b.textContent="横屏"; }
+        if (isPortrait) { c.style.aspectRatio = "16/9"; isPortrait = false; b.textContent = "竖屏"; }
+        else { c.style.aspectRatio = "9/16"; isPortrait = true; b.textContent = "横屏"; }
       }
 
       // --- 选择遗产 ---
       function selectHeritage(id) {
         const h = heritages.find(x => x.id === id);
         if (!h) return;
-
-        document.querySelectorAll(".heritage-card").forEach(c =>
-          c.classList.toggle("active", c.dataset.id === id)
-        );
-
-        document.getElementById("d-name").textContent = h.name;
-        document.getElementById("d-era").textContent = h.era;
-        document.getElementById("d-desc").textContent = h.desc;
-        document.getElementById("d-history").textContent = h.history;
-        document.getElementById("d-stories").textContent = h.stories;
-        document.getElementById("d-facts").innerHTML = h.facts.map(f => `<li>${f}</li>`).join("");
-
-        document.getElementById("detail").classList.add("visible");
-        document.getElementById("placeholder").style.display = "none";
-
+        updateDetail(h);
         if (sdk && currentMode !== "tour") {
           setMode("quiz");
           speakWithInterrupt(`${h.name}。${h.desc}`);
         }
       }
 
+      function updateDetail(h) {
+        document.querySelectorAll(".heritage-card").forEach(c => c.classList.toggle("active", c.dataset.id === h.id));
+        document.getElementById("d-name").textContent = h.name;
+        document.getElementById("d-era").textContent = h.era;
+        document.getElementById("d-desc").textContent = h.desc;
+        document.getElementById("d-history").textContent = h.history;
+        document.getElementById("d-stories").textContent = h.stories;
+        document.getElementById("d-facts").innerHTML = h.facts.map(f => `<li>${f}</li>`).join("");
+        document.getElementById("detail").classList.add("visible");
+        document.getElementById("placeholder").style.display = "none";
+        // 滚动到顶部
+        document.querySelector(".detail-scroll").scrollTop = 0;
+      }
+
       // --- 导览 ---
       function startTour() {
         if (!sdk) { alert("请先连接"); return; }
-
-        // 停止之前的导览
         tourTimers.forEach(t => clearTimeout(t));
-        tourTimers = [];
-        tourIndex = 0;
+        tourTimers = []; tourIndex = 0;
         setMode("tour");
 
         const list = currentCategory === "all" ? heritages : heritages.filter(h => h.category === currentCategory);
@@ -773,29 +706,14 @@
             speakWithInterrupt("导览结束！希望您对中国的文化遗产有了更深入的了解。您可以随时提问。");
             return;
           }
-
           const h = list[tourIndex];
           document.getElementById("tour-progress").textContent = `${tourIndex + 1} / ${list.length}`;
+          updateDetail(h);
 
-          // 更新选中状态
-          document.querySelectorAll(".heritage-card").forEach(c =>
-            c.classList.toggle("active", c.dataset.id === h.id)
-          );
-          document.getElementById("d-name").textContent = h.name;
-          document.getElementById("d-era").textContent = h.era;
-          document.getElementById("d-desc").textContent = h.desc;
-          document.getElementById("d-history").textContent = h.history;
-          document.getElementById("d-stories").textContent = h.stories;
-          document.getElementById("d-facts").innerHTML = h.facts.map(f => `<li>${f}</li>`).join("");
-          document.getElementById("detail").classList.add("visible");
-          document.getElementById("placeholder").style.display = "none";
-
-          // 流式播报
           sdk.speak(`第${tourIndex+1}站，${h.name}。${h.desc}`, true, false);
           tourTimers.push(setTimeout(() => sdk.speak(`历史沿革：${h.history}`, false, false), 5000));
           tourTimers.push(setTimeout(() => {
-            const facts = h.facts.slice(0, 2).join("；");
-            sdk.speak(`核心知识：${facts}`, false, false);
+            sdk.speak(`核心知识：${h.facts.slice(0,2).join("；")}`, false, false);
           }, 10000));
           tourTimers.push(setTimeout(() => sdk.speak(`文化故事：${h.stories}`, false, true), 15000));
 
@@ -807,39 +725,30 @@
         tourTimers.push(setTimeout(tourNext, 4000));
       }
 
-      // --- 提问（打断导览） ---
+      // --- 提问 ---
       function askQuestion() {
         if (!sdk) { alert("请先连接"); return; }
         const text = document.getElementById("tts-input").value.trim();
         if (!text) return;
-
-        // 提问时自动停止导览
         if (currentMode === "tour") {
           tourTimers.forEach(t => clearTimeout(t));
           tourTimers = [];
           document.getElementById("tour-progress").textContent = "";
         }
         setMode("quiz");
-
-        const answer = findAnswer(text);
-        speakWithInterrupt(answer);
+        speakWithInterrupt(findAnswer(text));
       }
 
-      // skill 规范: 打断与插话
       function speakWithInterrupt(text) {
         if (!sdk) return;
         sdk.interactiveidle();
         pendingSpeak = text;
       }
 
-      // --- 问答匹配 ---
       function findAnswer(q) {
         const lq = q.toLowerCase();
-        // 全匹配
         for (const qa of qaDB) { if (qa.kw.every(k => lq.includes(k))) return qa.a; }
-        // 模糊匹配
         for (const qa of qaDB) { if (qa.kw.some(k => lq.includes(k))) return qa.a; }
-        // 遗产名匹配
         for (const h of heritages) { if (lq.includes(h.name)) return `${h.name}：${h.desc}`; }
         return "关于这个问题，我还需要进一步学习。您可以尝试询问长城、故宫、兵马俑等文化遗产的相关知识。";
       }
@@ -862,7 +771,6 @@
       // skill 规范: 生命周期红线
       window.addEventListener("beforeunload", () => { if (sdk) sdk.destroy(); });
 
-      // 初始化
       renderGrid("all");
     </script>
   </body>
