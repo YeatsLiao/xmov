@@ -102,7 +102,7 @@ idle (待命) ──点击导览──→ tour (导览中) ──点击提问─
 - **魔珐星云官网** — [https://www.xingyun3d.com](https://www.xingyun3d.com)
 - **魔珐星云开放平台** — [https://open.xingyun3d.com](https://open.xingyun3d.com)
 - **魔珐星云 SDK 文档** — [https://docs.xingyun3d.com](https://docs.xingyun3d.com)
-- **在线 Demo** — [GitHub Pages](https://your-username.github.io/xmov/cultural-heritage-guardian.html)
+- **在线 Demo** — [https://yeatsliao.github.io/xmov/](https://yeatsliao.github.io/xmov/)
 
 ## 依赖
 
@@ -130,6 +130,6 @@ idle (待命) ──点击导览──→ tour (导览中) ──点击提问─
 3. 进入仓库 **Settings → Pages**
 4. Source 选择 **Deploy from a branch**，分支选 `main`，目录选 `/ (root)`
 5. 点击 **Save**，等待部署完成
-6. 访问地址：`https://your-username.github.io/xmov/cultural-heritage-guardian.html`
+6. 访问地址：`https://yeatsliao.github.io/xmov/`
 
-> 部署完成后，将上方"在线 Demo"链接中的 `your-username` 替换为你的 GitHub 用户名。
+> `index.html` 会自动重定向到 `cultural-heritage-guardian.html`，根路径即可访问。
