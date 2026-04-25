@@ -102,7 +102,7 @@ idle (待命) ──点击导览──→ tour (导览中) ──点击提问─
 - **魔珐星云官网** — [https://www.xingyun3d.com](https://www.xingyun3d.com)
 - **魔珐星云开放平台** — [https://open.xingyun3d.com](https://open.xingyun3d.com)
 - **魔珐星云 SDK 文档** — [https://docs.xingyun3d.com](https://docs.xingyun3d.com)
-- **在线 Demo** — [https://yeatsliao.github.io/xmov/](https://yeatsliao.github.io/xmov/)
+- **在线 Demo** — [https://yeatsliao.github.io/xmov-cultural-guardian/](https://yeatsliao.github.io/xmov-cultural-guardian/)
 
 ## 依赖
 
@@ -117,19 +117,19 @@ idle (待命) ──点击导览──→ tour (导览中) ──点击提问─
 
 ## 部署到 GitHub Pages
 
-1. 在 GitHub 上创建仓库 `xmov`
+1. 在 GitHub 上创建仓库 `xmov-cultural-guardian`
 2. 推送代码到仓库：
    ```bash
    git init
    git add .
    git commit -m "init: 文化遗产数字守护者 Demo"
-   git remote add origin https://github.com/your-username/xmov.git
+   git remote add origin https://github.com/YeatsLiao/xmov-cultural-guardian.git
    git branch -M main
    git push -u origin main
    ```
 3. 进入仓库 **Settings → Pages**
 4. Source 选择 **Deploy from a branch**，分支选 `main`，目录选 `/ (root)`
 5. 点击 **Save**，等待部署完成
-6. 访问地址：`https://yeatsliao.github.io/xmov/`
+6. 访问地址：`https://yeatsliao.github.io/xmov-cultural-guardian/`
 
 > 主文件已命名为 `index.html`，GitHub Pages 根路径即可直接访问。
